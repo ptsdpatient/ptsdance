@@ -55,7 +55,6 @@ class spawnArrow(pygame.sprite.Sprite):
     def update(self):
         global gameScore
         self.rect.y -= 1
-        rotation=self.rect.angle
         if self.rect.y<50:
              key=pygame.key.get_pressed()
              if key[pygame.K_LEFT] and self.rect.x==15:
