@@ -4,7 +4,7 @@ pygame.init()
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
-Done=False
+gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
 recieveList=pygame.sprite.Group()
@@ -14,8 +14,51 @@ disco_ball=[pygame.image.load("src/game_files/game_objects/disco_ball_0.png"),py
 disco_bg=[pygame.image.load("src/game_files/game_objects/dance_bg_0.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_4.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_0.png")]
 dance_bg_index=0
 disco_ball_index=0
+white=(255,255,255)
 clock=pygame.time.Clock()
         
+
+def menuScreen():
+        global gameOver
+        bg_img=pygame.image.load("src/game_files/game_objects/menu_bg.png")
+        bg_img=pygame.transform.smoothscale(bg_img,(800,500))
+        bg_img_rect=bg_img.get_rect()
+        font=pygame.font.Font("src/font/GALSB.ttf",32)
+        btn_1=font.render("Start",True,white)
+        btn_1_rect=btn_1.get_rect()
+        btn_1_rect.center=400,200
+        btn_2=font.render("Quit",True,white)
+        btn_2_rect=btn_2.get_rect()
+        btn_2_rect.center=400,250
+        hover=0
+        while gameOver:
+            for event in pygame.event.get():
+                if event.type==pygame.K_DOWN:
+                    hover=1
+                    btn_1=pygame.transform.smoothscale(btn_1,(40,40))
+                    btn_2=pygame.transform.smoothscale(btn_2,(30,30))
+
+                if event.type==pygame.K_UP:
+                    hover=0
+                    btn_1=pygame.transform.smoothscale(btn_1,(30,30))
+                    btn_2=pygame.transform.smoothscale(btn_2,(40,40))
+                if event.type==pygame.QUIT or (hover==1 and event.type==pygame.K_SPACE):
+                    pygame.quit()
+                if hover==0 and (event.type==pygame.K_SPACE or event.type==pygame.MOUSEBUTTONDOWN):
+                    gameOver=False 
+            screen.blit(btn_2,btn_2_rect)
+            screen.blit(btn_1,btn_1_rect)
+            screen.blit(bg_img,bg_img_rect)
+        
+
+
+        
+
+
+
+
+
+
 
 def draw_disco_ball():
     global disco_ball_index,dance_bg_index
@@ -106,7 +149,7 @@ class spawnArrow(pygame.sprite.Sprite):
 
     def update(self):
         global gameScore
-        self.rect.y -= 1
+        self.rect.y -= 2
         
         if self.rect.y<50:
              key=pygame.key.get_pressed()
@@ -139,18 +182,21 @@ class spawnArrow(pygame.sprite.Sprite):
                  self.kill()
     
             
+menuScreen()
+
 
 for i in range(0,4):
     reciever=spawnCollector(i*90)
     recieveList.add(reciever)
 
 
-while not Done:
+
+while not gameOver:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
             sys.exit()
-    if random.randrange(0,200)%29==3 and len(arrowList)<5:
+    if random.randrange(0,200)%29==3 and len(arrowList)<random.randrange(5):
         for i in range(4):   
            rotation=random.randrange(0,4)*90
            color=str(random.randrange(0,50)%8)
