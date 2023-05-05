@@ -1,4 +1,4 @@
-import pygame,random,sys
+import pygame,random,sys,os
 from pygame.locals import *
 pygame.init()
 resolution=[800,500]
@@ -15,50 +15,88 @@ disco_bg=[pygame.image.load("src/game_files/game_objects/dance_bg_0.png"),pygame
 dance_bg_index=0
 disco_ball_index=0
 white=(255,255,255)
+blue=(56,138,211)
+float_effect=[0,1,3,4,3,1,0]
+font_big=pygame.font.Font("src/font/GALSB.ttf",40)
+font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
-        
-
 def menuScreen():
-        global gameOver
-        bg_img=pygame.image.load("src/game_files/game_objects/menu_bg.png")
-        bg_img=pygame.transform.smoothscale(bg_img,(800,500))
-        bg_img_rect=bg_img.get_rect()
-        font=pygame.font.Font("src/font/GALSB.ttf",32)
-        btn_1=font.render("Start",True,white)
+        global gameOver,dance_bg_index
+        btn_1=font_big.render("START",True,blue)
         btn_1_rect=btn_1.get_rect()
-        btn_1_rect.center=400,200
-        btn_2=font.render("Quit",True,white)
+        btn_1_rect.center=400,350
+        btn_2=font_small.render("QUIT",True,blue)
         btn_2_rect=btn_2.get_rect()
-        btn_2_rect.center=400,250
+        btn_2_rect.center=400,400
         hover=0
+        l=0
         while gameOver:
+            dance_bg_index+=0.25
+            l+=0.25
+            if dance_bg_index>8:
+                dance_bg_index=0
+            if l>6:
+                l=0
             for event in pygame.event.get():
-                if event.type==pygame.K_DOWN:
+               if event.type==pygame.QUIT:
+                   pygame.quit()
+                   sys.exit()
+               if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_DOWN:
                     hover=1
-                    btn_1=pygame.transform.smoothscale(btn_1,(40,40))
-                    btn_2=pygame.transform.smoothscale(btn_2,(30,30))
-
-                if event.type==pygame.K_UP:
+                    btn_2=font_big.render("QUIT",True,blue)
+                    btn_2_rect=btn_2.get_rect()
+                    btn_1=font_small.render("START",True,blue)
+                    btn_1_rect=btn_1.get_rect()
+                   
+                if event.key==pygame.K_UP:
                     hover=0
-                    btn_1=pygame.transform.smoothscale(btn_1,(30,30))
-                    btn_2=pygame.transform.smoothscale(btn_2,(40,40))
-                if event.type==pygame.QUIT or (hover==1 and event.type==pygame.K_SPACE):
+                    btn_2=font_small.render("QUIT",True,blue)
+                    btn_2_rect=btn_2.get_rect()
+                    btn_1=font_big.render("START",True,blue)
+                    btn_1_rect=btn_1.get_rect()
+                    
+                if hover==1 and event.key==pygame.K_SPACE:
                     pygame.quit()
-                if hover==0 and (event.type==pygame.K_SPACE or event.type==pygame.MOUSEBUTTONDOWN):
-                    gameOver=False 
+                    sys.exit()
+                if hover==0 and event.key==pygame.K_SPACE:
+                    gameOver=False
+
+            btn_1_rect.center=400,350
+            btn_2_rect.center=400,400
+            if hover==0:
+               btn_1_rect.center=400,350 + float_effect[round(l)]
+            else:
+               btn_2_rect.center=400,390 + float_effect[round(l)]
+            bg_sel_img=pygame.image.load("src/game_files/game_objects/bg_wp_sel.png")
+            bg_sel_img=pygame.transform.smoothscale(bg_sel_img,(1600,1000))
+            bg_sel_rect=bg_sel_img.get_rect()
+            bg_sel_rect.center=460,250
+            bg_img=disco_bg[round(dance_bg_index)]
+            bg_img=pygame.transform.smoothscale(bg_img,(1600,1000))
+            bg_img_rect=bg_img.get_rect()
+            bg_img_rect.center=460,250
+            bg_wp_img=pygame.image.load("src/game_files/game_objects/bg_wp.png")
+            bg_wp_img=pygame.transform.smoothscale(bg_wp_img,(800,500))
+            bg_wp_rect=bg_wp_img.get_rect()
+            bg_wp_rect.center=400,250
+            screen.fill((255,255,255))
+            screen.blit(bg_wp_img,bg_wp_rect)
+            screen.blit(bg_img,bg_img_rect)
+            screen.blit(bg_sel_img,bg_sel_rect)
             screen.blit(btn_2,btn_2_rect)
             screen.blit(btn_1,btn_1_rect)
-            screen.blit(bg_img,bg_img_rect)
+            pygame.display.update()
         
-
-
+        screen.fill((0,0,0))
+        load_txt=font_big.render("LOADING...",True,(255,255,255))
+        load_txt_rect=load_txt.get_rect()
+        load_txt_rect.center=650,450
+        screen.blit(load_txt,load_txt_rect)
+        pygame.display.update()
+        pygame.time.wait(1000)
         
-
-
-
-
-
-
+menuScreen()
 
 def draw_disco_ball():
     global disco_ball_index,dance_bg_index
