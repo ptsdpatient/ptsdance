@@ -4,6 +4,9 @@ pygame.init()
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
+music_dir="src/music/"
+file_list=os.listdir(music_dir)
+music_list=[file for file in file_list if (file.endswith(".mp3") or file.endswith(".wav"))]
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -234,6 +237,11 @@ while not gameOver:
         if event.type==pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_ESCAPE:
+                screen.fill((0,0,0))
+                gameOver=True
+                menuScreen()
     if random.randrange(0,200)%29==3 and len(arrowList)<random.randrange(5):
         for i in range(4):   
            rotation=random.randrange(0,4)*90
