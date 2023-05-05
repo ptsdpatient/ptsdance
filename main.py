@@ -3,7 +3,7 @@ from pygame.locals import *
 pygame.init()
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
-pygame.display.set_caption("arrows")
+pygame.display.set_caption("ptsdance")
 Done=False
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -35,8 +35,18 @@ def draw_disco_ball():
     ball_img=pygame.image.load("src/game_files/game_objects/disco_ball.png")
     ball_img_rect=ball_img.get_rect()
     ball_img_rect.center=600,50
+    dance_floor=pygame.image.load("src/game_files/game_objects/dance_floor.png")
+    dance_floor=pygame.transform.smoothscale(dance_floor,(350,200))
+    dance_floor_rect=dance_floor.get_rect()
+    dance_floor_rect.center=600,405
+    bg_wp=pygame.image.load("src/game_files/game_objects/bg_wp.png")
+    bg_wp=pygame.transform.smoothscale(bg_wp,(800,500))
+    bg_wp_rect=bg_wp.get_rect()
+    bg_wp_rect.center=400,250
+    screen.blit(bg_wp,bg_wp_rect)
     screen.blit(bg_img,bg_rect)
     screen.blit(ball_img,ball_img_rect)
+    screen.blit(dance_floor,dance_floor_rect)
     screen.blit(img,rect)
     
 class spawnPass(pygame.sprite.Sprite):
