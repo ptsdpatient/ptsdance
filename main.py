@@ -10,30 +10,35 @@ arrowList=pygame.sprite.Group()
 recieveList=pygame.sprite.Group()
 passList=pygame.sprite.Group()
 gameScore=0
-bg=pygame.image.load("src/game_files/game_objects/dance_bg.png")
-bg=pygame.transform.smoothscale(bg,(800,500))
-bg_rect=bg.get_rect()
-bg_rect.center=400,250
-screen.blit(bg,bg_rect)
 disco_ball=[pygame.image.load("src/game_files/game_objects/disco_ball_0.png"),pygame.image.load("src/game_files/game_objects/disco_ball_1.png"),pygame.image.load("src/game_files/game_objects/disco_ball_2.png"),pygame.image.load("src/game_files/game_objects/disco_ball_3.png")]
+disco_bg=[pygame.image.load("src/game_files/game_objects/dance_bg_0.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_4.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_0.png")]
+dance_bg_index=0
 disco_ball_index=0
 clock=pygame.time.Clock()
         
 
 def draw_disco_ball():
-    global disco_ball_index
+    global disco_ball_index,dance_bg_index
+    if dance_bg_index>8:
+        dance_bg_index=0
     if disco_ball_index>3:
         disco_ball_index=0
+    bg_img=disco_bg[round(dance_bg_index)]
     img=disco_ball[round(disco_ball_index)]
+    bg_img=pygame.transform.smoothscale(bg_img,(800,500))
+    bg_rect=bg_img.get_rect()
+    bg_rect.center=400,250
     rect=img.get_rect()
     rect.center=600,250
     disco_ball_index+=0.05
+    dance_bg_index+=0.25
+    ball_img=pygame.image.load("src/game_files/game_objects/disco_ball.png")
+    ball_img_rect=ball_img.get_rect()
+    ball_img_rect.center=600,50
+    screen.blit(bg_img,bg_rect)
+    screen.blit(ball_img,ball_img_rect)
     screen.blit(img,rect)
-    img2=pygame.image.load("src/game_files/game_objects/disco_ball.png")
-    rect2=img2.get_rect()
-    rect2.center=600,50
-    screen.blit(img2,rect2)
-
+    
 class spawnPass(pygame.sprite.Sprite):
     def __init__(self,imageName):
         super().__init__()
@@ -43,7 +48,7 @@ class spawnPass(pygame.sprite.Sprite):
         self.rect.center=500+random.randrange(0,3)*50,50
         screen.blit(self.image,self.rect)   
     def update(self):
-        if self.rect.y>400:
+        if self.rect.y>300:
             self.kill()
         else:
             self.rect.y+=3
@@ -138,12 +143,11 @@ while not Done:
     if random.randrange(0,200)%29==3 and len(arrowList)<5:
         for i in range(4):   
            rotation=random.randrange(0,4)*90
-           color=str(random.randrange(0,8))
+           color=str(random.randrange(0,50)%8)
         arrow=spawnArrow(color,rotation)
         arrowList.add(arrow)
     screen.fill((14, 23, 31))
     pygame.time.wait(gameSpeed)
-    screen.blit(bg,bg_rect)
     draw_disco_ball()
     passList.update()
     passList.draw(screen)
