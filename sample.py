@@ -14,10 +14,10 @@ def menuScreen():
         font_small=pygame.font.Font("src/font/GALSB.ttf",32)
         btn_1=font_big.render("START",True,white)
         btn_1_rect=btn_1.get_rect()
-        btn_1_rect.center=400,270
+        btn_1_rect.center=400,300
         btn_2=font_small.render("QUIT",True,white)
         btn_2_rect=btn_2.get_rect()
-        btn_2_rect.center=400,320
+        btn_2_rect.center=400,350
         hover=0
         l=0
         while gameOver:
@@ -45,12 +45,12 @@ def menuScreen():
                 if hover==1 and event.key==pygame.K_SPACE:
                     pygame.quit()
                     sys.exit()
-            btn_1_rect.center=400,270
-            btn_2_rect.center=400,320
+            btn_1_rect.center=400,300
+            btn_2_rect.center=400,350
             if hover==0:
-               btn_1_rect.center=400,270 + float_effect[round(l)]
+               btn_1_rect.center=400,300 + float_effect[round(l)]
             else:
-               btn_2_rect.center=400,310 + float_effect[round(l)]
+               btn_2_rect.center=400,340 + float_effect[round(l)]
              
             screen.fill(white)
             screen.blit(bg_img,bg_img_rect)
