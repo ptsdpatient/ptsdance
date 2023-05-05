@@ -8,14 +8,12 @@ game_icon=pygame.image.load("src/game_icon/dance.png")
 screen = pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
 pygame.display.set_icon(game_icon)
-gameOver = True
+gameOver = False
 bg_color = (31, 35, 43)
 
 #game settings
 
 key_row=[0]*4
-print(key_row)
-
 while not gameOver:
     for event in pygame.event.get(): 
         
@@ -23,10 +21,12 @@ while not gameOver:
         if event.type==pygame.QUIT:
             gameOver=True
     screen.fill(bg_color)  
-    dust=pygame.image.load("src/game_files/dus.png")
+    dust=pygame.image.load("src/game_files/game_objects/arrow_1.png")
     rect1=dust.get_rect()
     rect1.center=200,0
     screen.blit(dust,rect1)
+    key=pygame.key.get_pressed()
+    print(key[pygame.K_SPACE])
     pygame.display.update()  
                 
 
