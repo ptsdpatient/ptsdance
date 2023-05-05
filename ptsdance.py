@@ -1,6 +1,9 @@
 import pygame,random,sys,os
 from pygame.locals import *
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.set_volume(0.5)
+
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
@@ -230,7 +233,9 @@ for i in range(0,4):
     reciever=spawnCollector(i*90)
     recieveList.add(reciever)
 
-
+pygame.mixer.music.load("src/music/"+str(music_list[0]))
+pygame.mixer.music.play()
+    
 
 while not gameOver:
     for event in pygame.event.get():
