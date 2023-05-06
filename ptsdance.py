@@ -49,10 +49,10 @@ class spawnStreakFont(pygame.sprite.Sprite):
         self.rect.center=230+random.randrange(200),400+random.randrange(50)
         screen.blit(self.image,self.rect)
     def update(self):
-        print(game_streak,self.rect.y)  
+      
         self.rect.y-=random.randrange(1.00,3.00)
-        if self.rect.y<300:
-            print("killed")
+        if self.rect.y<250:
+           
             self.kill()            
 
 
@@ -180,12 +180,16 @@ def draw_disco_ball():
     bg_wp=pygame.transform.smoothscale(bg_wp,(800,500))
     bg_wp_rect=bg_wp.get_rect()
     bg_wp_rect.center=400,250
+    game_score_img=font_big.render("score:"+str(gameScore),True,white)
+    game_score_rect=game_score_img.get_rect()
+    game_score_rect.center=455,70
     screen.blit(bg_wp,bg_wp_rect)
     screen.blit(bg_img,bg_rect)
     screen.blit(ball_img,ball_img_rect)
     screen.blit(dance_floor,dance_floor_rect)
     screen.blit(img,rect)
     screen.blit(spot_light_img,spot_light_img_rect)
+    screen.blit(game_score_img,game_score_rect)
 class spawnPass(pygame.sprite.Sprite):
     def __init__(self,imageName):
         super().__init__()
@@ -316,7 +320,7 @@ while not gameOver:
             if game_streak > 0:
                 game_streak-=1
             gameLevel-=0.2
-        print(avgScore,gameScore,gameLevel,game_streak)
+        
     
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
