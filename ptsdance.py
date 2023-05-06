@@ -22,7 +22,8 @@ float_effect=[0,1,3,4,3,1,0]
 font_big=pygame.font.Font("src/font/GALSB.ttf",40)
 font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
-
+spot_light=[pygame.image.load("src/game_files/game_objects/bg_light_0.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_0.png")]
+spot_light_index=0
 
 
 def menuScreen():
@@ -113,11 +114,16 @@ def menuScreen():
 menuScreen()
 
 def draw_disco_ball():
-    global disco_ball_index,dance_bg_index
+    global disco_ball_index,dance_bg_index,spot_light_index,spot_light
+    if spot_light_index>4:
+        spot_light_index=0
     if dance_bg_index>8:
         dance_bg_index=0
     if disco_ball_index>3:
         disco_ball_index=0
+    spot_light_img=spot_light[round(spot_light_index)]
+    spot_light_img=pygame.transform.smoothscale(spot_light_img,(800,500))
+    spot_light_img_rect=spot_light_img.get_rect()
     bg_img=disco_bg[round(dance_bg_index)]
     img=disco_ball[round(disco_ball_index)]
     bg_img=pygame.transform.smoothscale(bg_img,(800,500))
@@ -127,6 +133,7 @@ def draw_disco_ball():
     rect.center=600,250
     disco_ball_index+=0.05
     dance_bg_index+=0.25
+    spot_light_index+=0.25
     ball_img=pygame.image.load("src/game_files/game_objects/disco_ball.png")
     ball_img_rect=ball_img.get_rect()
     ball_img_rect.center=600,50
@@ -143,7 +150,7 @@ def draw_disco_ball():
     screen.blit(ball_img,ball_img_rect)
     screen.blit(dance_floor,dance_floor_rect)
     screen.blit(img,rect)
-    
+    screen.blit(spot_light_img,spot_light_img_rect)
 class spawnPass(pygame.sprite.Sprite):
     def __init__(self,imageName):
         super().__init__()
@@ -169,19 +176,23 @@ class spawnCollector(pygame.sprite.Sprite):
     def update(self):
          key=pygame.key.get_pressed()
          if key[pygame.K_LEFT] and self.rect.x==10:
-             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound=pygame.mixer.Sound("src/sound/btn1.mp3")
+             sound.set_volume(0.2)
              sound.play()
              self.rect.x=5    
          if key[pygame.K_DOWN] and self.rect.x==100 and self.rect.y==40:
-             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound=pygame.mixer.Sound("src/sound/btn1.mp3")
+             sound.set_volume(0.2)
              sound.play()
              self.rect.y=45
          if key[pygame.K_RIGHT] and self.rect.x==190:
-             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound=pygame.mixer.Sound("src/sound/btn1.mp3")
+             sound.set_volume(0.2)
              sound.play()
              self.rect.x=195   
          if key[pygame.K_UP] and self.rect.x==280 and self.rect.y==40:
-             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound=pygame.mixer.Sound("src/sound/btn1.mp3")
+             sound.set_volume(0.2)
              sound.play()
              self.rect.y=35
 
