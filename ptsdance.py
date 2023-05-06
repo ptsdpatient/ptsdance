@@ -22,10 +22,13 @@ float_effect=[0,1,3,4,3,1,0]
 font_big=pygame.font.Font("src/font/GALSB.ttf",40)
 font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
-spot_light=[pygame.image.load("src/game_files/game_objects/bg_light_0.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_0.png")]
+spot_light=[pygame.image.load("src/game_files/game_objects/bg_light_0.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_6.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_0.png")]
 spot_light_index=0
-
-
+gameLevel=5
+avgScore=0
+total_arrows=0
+total_arrows_index=0
+right_arrows=0
 def menuScreen():
         pygame.mixer.music.stop()
         global gameOver,dance_bg_index
@@ -67,12 +70,12 @@ def menuScreen():
                     btn_1=font_big.render("START",True,white)
                     btn_1_rect=btn_1.get_rect()
                     
-                if hover==1 and event.key==pygame.K_SPACE:
+                if hover==1 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
                     sound.play()
                     pygame.quit()
                     sys.exit()
-                if hover==0 and event.key==pygame.K_SPACE:
+                if hover==0 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
                     sound.play()
                     gameOver=False
@@ -115,7 +118,7 @@ menuScreen()
 
 def draw_disco_ball():
     global disco_ball_index,dance_bg_index,spot_light_index,spot_light
-    if spot_light_index>4:
+    if spot_light_index>12:
         spot_light_index=0
     if dance_bg_index>8:
         dance_bg_index=0
@@ -177,22 +180,22 @@ class spawnCollector(pygame.sprite.Sprite):
          key=pygame.key.get_pressed()
          if key[pygame.K_LEFT] and self.rect.x==10:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
-             sound.set_volume(0.2)
+             sound.set_volume(0.3)
              sound.play()
              self.rect.x=5    
          if key[pygame.K_DOWN] and self.rect.x==100 and self.rect.y==40:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
-             sound.set_volume(0.2)
+             sound.set_volume(0.3)
              sound.play()
              self.rect.y=45
          if key[pygame.K_RIGHT] and self.rect.x==190:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
-             sound.set_volume(0.2)
+             sound.set_volume(0.3)
              sound.play()
              self.rect.x=195   
          if key[pygame.K_UP] and self.rect.x==280 and self.rect.y==40:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
-             sound.set_volume(0.2)
+             sound.set_volume(0.3)
              sound.play()
              self.rect.y=35
 
@@ -219,31 +222,35 @@ class spawnArrow(pygame.sprite.Sprite):
 
 
     def update(self):
-        global gameScore
-        self.rect.y -= 2
+        global gameScore,right_arrows
+        self.rect.y -= (gameLevel/5)*2
         
         if self.rect.y<50:
              key=pygame.key.get_pressed()
              if key[pygame.K_LEFT] and self.rect.x==15:
                 gameScore+=1
+                right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,90)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass)
                 self.kill()
              if key[pygame.K_DOWN] and self.rect.x==105:
                 gameScore+=1
+                right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,0)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
                 self.kill()
              if key[pygame.K_RIGHT] and self.rect.x==195:
                 gameScore+=1
+                right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,270)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
                 self.kill()
              if key[pygame.K_UP] and self.rect.x==285:
                 gameScore+=1
+                right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,180)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
@@ -262,6 +269,11 @@ file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
 while not gameOver:
+    if total_arrows>10:
+        avgScore=right_arrows/10
+        total_arrows=0
+        right_arrows=0
+        
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
         pygame.mixer.music.play()
@@ -275,11 +287,12 @@ while not gameOver:
                 screen.fill((0,0,0))
                 gameOver=True
                 menuScreen()
-    if random.randrange(0,200)%29==3 and len(arrowList)<random.randrange(5):
+    if random.randrange(0,200)%6==3 and len(arrowList)<random.randrange(gameLevel):
         for i in range(4):   
            rotation=random.randrange(0,4)*90
            color=str(random.randrange(0,50)%8)
         arrow=spawnArrow(color,rotation)
+        total_arrows+=1
         arrowList.add(arrow)
     screen.fill((14, 23, 31))
     pygame.time.wait(gameSpeed)
