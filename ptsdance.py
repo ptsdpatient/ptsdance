@@ -6,7 +6,6 @@ pygame.mixer.music.set_volume(0.5)
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
-
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -23,13 +22,16 @@ float_effect=[0,1,3,4,3,1,0]
 font_big=pygame.font.Font("src/font/GALSB.ttf",40)
 font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
+
+
+
 def menuScreen():
-        
+        pygame.mixer.music.stop()
         global gameOver,dance_bg_index
-        btn_1=font_big.render("START",True,blue)
+        btn_1=font_big.render("START",True,white)
         btn_1_rect=btn_1.get_rect()
         btn_1_rect.center=400,350
-        btn_2=font_small.render("QUIT",True,blue)
+        btn_2=font_small.render("QUIT",True,white)
         btn_2_rect=btn_2.get_rect()
         btn_2_rect.center=400,400
         hover=0
@@ -47,23 +49,31 @@ def menuScreen():
                    sys.exit()
                if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_DOWN:
+                    sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+                    sound.play()
                     hover=1
-                    btn_2=font_big.render("QUIT",True,blue)
+                    btn_2=font_big.render("QUIT",True,white)
                     btn_2_rect=btn_2.get_rect()
-                    btn_1=font_small.render("START",True,blue)
+                    btn_1=font_small.render("START",True,white)
                     btn_1_rect=btn_1.get_rect()
                    
                 if event.key==pygame.K_UP:
+                    sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+                    sound.play()
                     hover=0
-                    btn_2=font_small.render("QUIT",True,blue)
+                    btn_2=font_small.render("QUIT",True,white)
                     btn_2_rect=btn_2.get_rect()
-                    btn_1=font_big.render("START",True,blue)
+                    btn_1=font_big.render("START",True,white)
                     btn_1_rect=btn_1.get_rect()
                     
                 if hover==1 and event.key==pygame.K_SPACE:
+                    sound=pygame.mixer.Sound("src/sound/start.mp3")
+                    sound.play()
                     pygame.quit()
                     sys.exit()
                 if hover==0 and event.key==pygame.K_SPACE:
+                    sound=pygame.mixer.Sound("src/sound/start.mp3")
+                    sound.play()
                     gameOver=False
 
             btn_1_rect.center=400,350
@@ -159,12 +169,20 @@ class spawnCollector(pygame.sprite.Sprite):
     def update(self):
          key=pygame.key.get_pressed()
          if key[pygame.K_LEFT] and self.rect.x==10:
+             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound.play()
              self.rect.x=5    
-         if key[pygame.K_DOWN] and self.rect.x==100:
+         if key[pygame.K_DOWN] and self.rect.x==100 and self.rect.y==40:
+             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound.play()
              self.rect.y=45
          if key[pygame.K_RIGHT] and self.rect.x==190:
-             self.rect.x=195    
-         if key[pygame.K_UP] and self.rect.x==280:
+             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound.play()
+             self.rect.x=195   
+         if key[pygame.K_UP] and self.rect.x==280 and self.rect.y==40:
+             sound=pygame.mixer.Sound("src/sound/btn3.mp3")
+             sound.play()
              self.rect.y=35
 
          if self.rect.x==5 and not key[pygame.K_LEFT]:
