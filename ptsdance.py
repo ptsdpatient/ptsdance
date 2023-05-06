@@ -27,8 +27,8 @@ spot_light_index=0
 gameLevel=5
 avgScore=0
 total_arrows=0
-total_arrows_index=0
 right_arrows=0
+game_streak=0
 def menuScreen():
         pygame.mixer.music.stop()
         global gameOver,dance_bg_index
@@ -166,7 +166,7 @@ class spawnPass(pygame.sprite.Sprite):
         if self.rect.y>300:
             self.kill()
         else:
-            self.rect.y+=3
+            self.rect.y+=5
 class spawnCollector(pygame.sprite.Sprite):
     def __init__(self,rotation):
          super().__init__()
@@ -269,11 +269,20 @@ file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
 while not gameOver:
-    if total_arrows>10:
-        avgScore=right_arrows/10
+    if total_arrows>19:
+        avgScore=right_arrows/20
         total_arrows=0
         right_arrows=0
-        
+        if avgScore>0.5:
+            if gameLevel > 6:
+                game_streak+=1
+            gameLevel+=0.4
+        elif gameLevel > 4.5:
+            if game_streak > 0:
+                game_streak-=1
+            gameLevel-=0.4
+        print(avgScore,gameScore,gameLevel,game_streak)
+    
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
         pygame.mixer.music.play()
@@ -287,7 +296,7 @@ while not gameOver:
                 screen.fill((0,0,0))
                 gameOver=True
                 menuScreen()
-    if random.randrange(0,200)%6==3 and len(arrowList)<random.randrange(gameLevel):
+    if random.randrange(0,200)%6==3 and len(arrowList)<random.randrange(round(gameLevel)):
         for i in range(4):   
            rotation=random.randrange(0,4)*90
            color=str(random.randrange(0,50)%8)
