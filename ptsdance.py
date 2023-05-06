@@ -1,15 +1,12 @@
 import pygame,random,sys,os
 from pygame.locals import *
 pygame.init()
-pygame.mixer.init()
+pygame.mixer.init() 
 pygame.mixer.music.set_volume(0.5)
-
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance")
-music_dir="src/music/"
-file_list=os.listdir(music_dir)
-music_list=[file for file in file_list if (file.endswith(".mp3") or file.endswith(".wav"))]
+
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -27,6 +24,7 @@ font_big=pygame.font.Font("src/font/GALSB.ttf",40)
 font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
 def menuScreen():
+        
         global gameOver,dance_bg_index
         btn_1=font_big.render("START",True,blue)
         btn_1_rect=btn_1.get_rect()
@@ -224,20 +222,21 @@ class spawnArrow(pygame.sprite.Sprite):
              self.rect.y -= 1
              if self.rect.y<40:
                  self.kill()
-    
-            
+
 menuScreen()
-
-
 for i in range(0,4):
     reciever=spawnCollector(i*90)
     recieveList.add(reciever)
-
-pygame.mixer.music.load("src/music/"+str(music_list[0]))
-pygame.mixer.music.play()
-    
-
+ 
+music_dir="src/music/"
+file_list=os.listdir(music_dir)
+random.shuffle(file_list)
+music_list_index=0
 while not gameOver:
+    if not pygame.mixer.music.get_busy():
+        pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
+        pygame.mixer.music.play()
+        music_list_index+=1
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
