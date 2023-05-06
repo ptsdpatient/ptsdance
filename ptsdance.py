@@ -50,7 +50,7 @@ class spawnStreakFont(pygame.sprite.Sprite):
         screen.blit(self.image,self.rect)
     def update(self):
       
-        self.rect.y-=random.randrange(1.00,3.00)
+        self.rect.y-=random.randrange(1,3)
         if self.rect.y<250:
            
             self.kill()            
@@ -82,7 +82,7 @@ def menuScreen():
                    pygame.quit()
                    sys.exit()
                if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_DOWN:
+                if event.key==pygame.K_DOWN or event.key==pygame.K_s:
                     sound=pygame.mixer.Sound("src/sound/btn3.mp3")
                     sound.play()
                     hover=1
@@ -91,7 +91,7 @@ def menuScreen():
                     btn_1=font_small.render("START",True,white)
                     btn_1_rect=btn_1.get_rect()
                    
-                if event.key==pygame.K_UP:
+                if event.key==pygame.K_UP or event.key==pygame.K_w:
                     sound=pygame.mixer.Sound("src/sound/btn3.mp3")
                     sound.play()
                     hover=0
@@ -214,34 +214,34 @@ class spawnCollector(pygame.sprite.Sprite):
          screen.blit(self.image,self.rect)
     def update(self):
          key=pygame.key.get_pressed()
-         if key[pygame.K_LEFT] and self.rect.x==10:
+         if (key[pygame.K_LEFT] or key[pygame.K_a]) and self.rect.x==10:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
              sound.set_volume(0.3)
              sound.play()
              self.rect.x=5    
-         if key[pygame.K_DOWN] and self.rect.x==100 and self.rect.y==40:
+         if (key[pygame.K_DOWN] or key[pygame.K_s]) and self.rect.x==100 and self.rect.y==40:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
              sound.set_volume(0.3)
              sound.play()
              self.rect.y=45
-         if key[pygame.K_RIGHT] and self.rect.x==190:
+         if (key[pygame.K_RIGHT] or key[pygame.K_d]) and self.rect.x==190:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
              sound.set_volume(0.3)
              sound.play()
              self.rect.x=195   
-         if key[pygame.K_UP] and self.rect.x==280 and self.rect.y==40:
+         if (key[pygame.K_UP] or key[pygame.K_w]) and self.rect.x==280 and self.rect.y==40:
              sound=pygame.mixer.Sound("src/sound/btn1.mp3")
              sound.set_volume(0.3)
              sound.play()
              self.rect.y=35
 
-         if self.rect.x==5 and not key[pygame.K_LEFT]:
+         if self.rect.x==5 and not (key[pygame.K_LEFT] or key[pygame.K_a]):
              self.rect.x=10
-         if self.rect.x==100 and not key[pygame.K_DOWN]:
+         if self.rect.x==100 and not (key[pygame.K_DOWN] or key[pygame.K_s]):
              self.rect.y=40
-         if self.rect.x==195 and not key[pygame.K_RIGHT]:
+         if self.rect.x==195 and not (key[pygame.K_RIGHT] or key[pygame.K_d]):
              self.rect.x=190
-         if self.rect.x==280 and not key[pygame.K_UP]:
+         if self.rect.x==280 and not (key[pygame.K_UP] or key[pygame.K_w]):
              self.rect.y=40
              
           
@@ -263,28 +263,28 @@ class spawnArrow(pygame.sprite.Sprite):
         
         if self.rect.y<50:
              key=pygame.key.get_pressed()
-             if key[pygame.K_LEFT] and self.rect.x==15:
+             if (key[pygame.K_LEFT] or key[pygame.K_a]) and self.rect.x==15:
                 gameScore+=1
                 right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,90)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass)
                 self.kill()
-             if key[pygame.K_DOWN] and self.rect.x==105:
+             if (key[pygame.K_DOWN] or key[pygame.K_s]) and self.rect.x==105:
                 gameScore+=1
                 right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,0)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
                 self.kill()
-             if key[pygame.K_RIGHT] and self.rect.x==195:
+             if (key[pygame.K_RIGHT] or key[pygame.K_d]) and self.rect.x==195:
                 gameScore+=1
                 right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,270)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
                 self.kill()
-             if key[pygame.K_UP] and self.rect.x==285:
+             if (key[pygame.K_UP] or key[pygame.K_w]) and self.rect.x==285:
                 gameScore+=1
                 right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,180)
@@ -315,7 +315,7 @@ while not gameOver:
             
                 streak_font=spawnStreakFont()
                 streak_font_list.add(streak_font)
-            gameLevel+=0.2
+            gameLevel+=0.4
         elif gameLevel > 4.5:
             if game_streak > 0:
                 game_streak-=1
