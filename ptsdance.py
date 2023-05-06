@@ -11,6 +11,7 @@ gameSpeed=15
 arrowList=pygame.sprite.Group()
 recieveList=pygame.sprite.Group()
 passList=pygame.sprite.Group()
+streak_font_list=pygame.sprite.Group()
 gameScore=0
 disco_ball=[pygame.image.load("src/game_files/game_objects/disco_ball_0.png"),pygame.image.load("src/game_files/game_objects/disco_ball_1.png"),pygame.image.load("src/game_files/game_objects/disco_ball_2.png"),pygame.image.load("src/game_files/game_objects/disco_ball_3.png")]
 disco_bg=[pygame.image.load("src/game_files/game_objects/dance_bg_0.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_4.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_0.png")]
@@ -29,8 +30,37 @@ avgScore=0
 total_arrows=0
 right_arrows=0
 game_streak=0
+
+game_streak_1=["GOOD!","NICE!","COOL","SWEET!","SMOOTH!","LIT!"]
+game_streak_2=["AWESOME!","SUPER!","CRAZYY!","AMAZING!","SPECTACULAR!","FIRE!","ELECTRIFYING!"]
+game_streak_3=["I know what you did","I know where you live","You can't run from me","You shouldn't have done that","Don't turn around","I can feel your skin","Welcome to my nightmare","the dead tell stories","Beware the smiling face","It's behind you","fear me"]
+class spawnStreakFont(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        global game_streak
+        color=[random.randrange(255),random.randrange(255),random.randrange(255)]
+        if game_streak==1 or game_streak==2 or game_streak==0:
+            self.image =font_big.render(game_streak_1[random.randrange(len(game_streak_1))],True,color)   
+        if game_streak==3 or game_streak==4 or game_streak==5:
+            self.image =font_big.render(game_streak_2[random.randrange(len(game_streak_2))],True,color)      
+        if game_streak>5:
+            self.image =font_big.render(game_streak_3[random.randrange(len(game_streak_3))],True,color)   
+        self.rect=self.image.get_rect()
+        self.rect.center=230+random.randrange(200),400+random.randrange(50)
+        screen.blit(self.image,self.rect)
+    def update(self):
+        print(game_streak,self.rect.y)  
+        self.rect.y-=random.randrange(1.00,3.00)
+        if self.rect.y<300:
+            print("killed")
+            self.kill()            
+
+
+
 def menuScreen():
         pygame.mixer.music.stop()
+        pygame.mixer.music.load("src/sound/menu.mp3")
+        pygame.mixer.music.play()
         global gameOver,dance_bg_index
         btn_1=font_big.render("START",True,white)
         btn_1_rect=btn_1.get_rect()
@@ -72,11 +102,13 @@ def menuScreen():
                     
                 if hover==1 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
+                    sound.set_volume(0.3)
                     sound.play()
                     pygame.quit()
                     sys.exit()
                 if hover==0 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
+                    sound.set_volume(0.3)
                     sound.play()
                     gameOver=False
 
@@ -263,24 +295,27 @@ menuScreen()
 for i in range(0,4):
     reciever=spawnCollector(i*90)
     recieveList.add(reciever)
- 
+pygame.mixer.music.stop()
 music_dir="src/music/"
 file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
 while not gameOver:
-    if total_arrows>19:
-        avgScore=right_arrows/20
+    if total_arrows>9:
+        avgScore=right_arrows/10
         total_arrows=0
         right_arrows=0
-        if avgScore>0.5:
-            if gameLevel > 6:
+        if avgScore>0.4:
+            if gameLevel > 4:
                 game_streak+=1
-            gameLevel+=0.4
+            
+                streak_font=spawnStreakFont()
+                streak_font_list.add(streak_font)
+            gameLevel+=0.2
         elif gameLevel > 4.5:
             if game_streak > 0:
                 game_streak-=1
-            gameLevel-=0.4
+            gameLevel-=0.2
         print(avgScore,gameScore,gameLevel,game_streak)
     
     if not pygame.mixer.music.get_busy():
@@ -308,6 +343,8 @@ while not gameOver:
     draw_disco_ball()
     passList.update()
     passList.draw(screen)
+    streak_font_list.update()
+    streak_font_list.draw(screen)
     recieveList.update()
     recieveList.draw(screen)
     arrowList.update()
