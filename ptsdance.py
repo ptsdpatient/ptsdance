@@ -30,10 +30,16 @@ avgScore=0
 total_arrows=0
 right_arrows=0
 game_streak=0
-
 game_streak_1=["GOOD!","NICE!","COOL","SWEET!","SMOOTH!","LIT!"]
 game_streak_2=["AWESOME!","SUPER!","CRAZYY!","AMAZING!","SPECTACULAR!","FIRE!","ELECTRIFYING!"]
 game_streak_3=["I know what you did","I know where you live","You can't run from me","You shouldn't have done that","Don't turn around","I can feel your skin","Welcome to my nightmare","the dead tell stories","Beware the smiling face","It's behind you","fear me"]
+high_score=0
+hs_path = 'src/hs.txt'
+if os.path.isfile(hs_path):
+    with open(hs_path, 'r') as file:
+        high_score = file.readline().strip()  
+        high_score=int(high_score)
+
 class spawnStreakFont(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -61,13 +67,21 @@ def menuScreen():
         pygame.mixer.music.stop()
         pygame.mixer.music.load("src/sound/menu.mp3")
         pygame.mixer.music.play()
-        global gameOver,dance_bg_index
+        global gameOver,dance_bg_index,hs_path,high_score
+        if gameScore>int(high_score):    
+            with open(hs_path, 'w') as file:
+                file.write(str(gameScore))
+                file.close()
+            
         btn_1=font_big.render("START",True,white)
         btn_1_rect=btn_1.get_rect()
         btn_1_rect.center=400,350
         btn_2=font_small.render("QUIT",True,white)
         btn_2_rect=btn_2.get_rect()
         btn_2_rect.center=400,400
+        hs=font_big.render("High Score : "+ str(high_score),True,white)
+        hs_rect=hs.get_rect()
+        hs_rect.center=620,50
         hover=0
         l=0
         while gameOver:
@@ -136,6 +150,7 @@ def menuScreen():
             screen.blit(bg_sel_img,bg_sel_rect)
             screen.blit(btn_2,btn_2_rect)
             screen.blit(btn_1,btn_1_rect)
+            screen.blit(hs,hs_rect)
             pygame.display.update()
         
         screen.fill((0,0,0))
@@ -180,9 +195,9 @@ def draw_disco_ball():
     bg_wp=pygame.transform.smoothscale(bg_wp,(800,500))
     bg_wp_rect=bg_wp.get_rect()
     bg_wp_rect.center=400,250
-    game_score_img=font_big.render("score:"+str(gameScore),True,white)
+    game_score_img=font_big.render("score : "+str(gameScore),True,white)
     game_score_rect=game_score_img.get_rect()
-    game_score_rect.center=455,70
+    game_score_rect.center=460,70
     screen.blit(bg_wp,bg_wp_rect)
     screen.blit(bg_img,bg_rect)
     screen.blit(ball_img,ball_img_rect)
@@ -305,6 +320,10 @@ file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
 while not gameOver:
+    if gameScore>int(high_score):    
+            with open(hs_path, 'w') as file:
+                file.write(str(gameScore))
+                file.close()
     if total_arrows>9:
         avgScore=right_arrows/10
         total_arrows=0
