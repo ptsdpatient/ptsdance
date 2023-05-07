@@ -13,7 +13,7 @@ recieveList=pygame.sprite.Group()
 passList=pygame.sprite.Group()
 streak_font_list=pygame.sprite.Group()
 gameScore=0
-disco_ball=[pygame.image.load("src/game_files/game_objects/disco_ball_0.png"),pygame.image.load("src/game_files/game_objects/disco_ball_1.png"),pygame.image.load("src/game_files/game_objects/disco_ball_2.png"),pygame.image.load("src/game_files/game_objects/disco_ball_3.png")]
+disco_ball=pygame.image.load("src/game_files/game_objects/disco_ball_0.png")
 disco_bg=[pygame.image.load("src/game_files/game_objects/dance_bg_0.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_4.png"),pygame.image.load("src/game_files/game_objects/dance_bg_3.png"),pygame.image.load("src/game_files/game_objects/dance_bg_2.png"),pygame.image.load("src/game_files/game_objects/dance_bg_1.png"),pygame.image.load("src/game_files/game_objects/dance_bg_0.png")]
 dance_bg_index=0
 disco_ball_index=0
@@ -23,7 +23,7 @@ float_effect=[0,1,3,4,3,1,0]
 font_big=pygame.font.Font("src/font/GALSB.ttf",40)
 font_small=pygame.font.Font("src/font/GALSB.ttf",32)
 clock=pygame.time.Clock()
-spot_light=[pygame.image.load("src/game_files/game_objects/bg_light_0.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_6.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_0.png")]
+spot_light=[pygame.image.load("src/game_files/game_objects/bg_light_0.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_6.png"),pygame.image.load("src/game_files/game_objects/bg_light_7.png"),pygame.image.load("src/game_files/game_objects/bg_light_6.png"),pygame.image.load("src/game_files/game_objects/bg_light_5.png"),pygame.image.load("src/game_files/game_objects/bg_light_4.png"),pygame.image.load("src/game_files/game_objects/bg_light_3.png"),pygame.image.load("src/game_files/game_objects/bg_light_2.png"),pygame.image.load("src/game_files/game_objects/bg_light_1.png"),pygame.image.load("src/game_files/game_objects/bg_light_0.png")]
 spot_light_index=0
 gameLevel=5
 avgScore=0
@@ -39,17 +39,17 @@ if os.path.isfile(hs_path):
     with open(hs_path, 'r') as file:
         high_score = file.readline().strip()  
         high_score=int(high_score)
-
+color_list=[(255, 31, 31),(255, 128, 31),(255, 221, 31),(225, 255, 31),(91, 255, 31),(31, 255, 150),(31, 195, 255),(31, 106, 255),(132, 31, 255),(188, 31, 255),(231, 40, 252),(252, 40, 142)]
 class spawnStreakFont(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         global game_streak
-        color=[random.randrange(255),random.randrange(255),random.randrange(255)]
-        if game_streak==1 or game_streak==2 or game_streak==0:
+        color=color_list[random.randrange(len(color_list))]
+        if game_streak<7:
             self.image =font_big.render(game_streak_1[random.randrange(len(game_streak_1))],True,color)   
-        if game_streak==3 or game_streak==4 or game_streak==5:
+        if game_streak<=19 and game_streak>6:
             self.image =font_big.render(game_streak_2[random.randrange(len(game_streak_2))],True,color)      
-        if game_streak>5:
+        if game_streak>19:
             self.image =font_big.render(game_streak_3[random.randrange(len(game_streak_3))],True,color)   
         self.rect=self.image.get_rect()
         self.rect.center=230+random.randrange(200),400+random.randrange(50)
@@ -72,7 +72,10 @@ def menuScreen():
             with open(hs_path, 'w') as file:
                 file.write(str(gameScore))
                 file.close()
-            
+        if os.path.isfile(hs_path):
+            with open(hs_path, 'r') as file:
+                high_score = file.readline().strip()  
+        high_score=int(high_score)
         btn_1=font_big.render("START",True,white)
         btn_1_rect=btn_1.get_rect()
         btn_1_rect.center=400,350
@@ -116,13 +119,13 @@ def menuScreen():
                     
                 if hover==1 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
-                    sound.set_volume(0.3)
+                    sound.set_volume(0.8)
                     sound.play()
                     pygame.quit()
                     sys.exit()
                 if hover==0 and (event.key==pygame.K_SPACE or event.key==pygame.K_RETURN):
                     sound=pygame.mixer.Sound("src/sound/start.mp3")
-                    sound.set_volume(0.3)
+                    sound.set_volume(0.8)
                     sound.play()
                     gameOver=False
 
@@ -164,29 +167,26 @@ def menuScreen():
 menuScreen()
 
 def draw_disco_ball():
-    global disco_ball_index,dance_bg_index,spot_light_index,spot_light
-    if spot_light_index>12:
+    global dance_bg_index,spot_light_index,spot_light
+    if spot_light_index>14:
         spot_light_index=0
     if dance_bg_index>8:
         dance_bg_index=0
-    if disco_ball_index>3:
-        disco_ball_index=0
     spot_light_img=spot_light[round(spot_light_index)]
     spot_light_img=pygame.transform.smoothscale(spot_light_img,(800,500))
     spot_light_img_rect=spot_light_img.get_rect()
     bg_img=disco_bg[round(dance_bg_index)]
-    img=disco_ball[round(disco_ball_index)]
+    img=disco_ball
     bg_img=pygame.transform.smoothscale(bg_img,(800,500))
     bg_rect=bg_img.get_rect()
     bg_rect.center=400,250
     rect=img.get_rect()
     rect.center=600,250
-    disco_ball_index+=0.05
     dance_bg_index+=0.25
     spot_light_index+=0.25
     ball_img=pygame.image.load("src/game_files/game_objects/disco_ball.png")
     ball_img_rect=ball_img.get_rect()
-    ball_img_rect.center=600,50
+    ball_img_rect.center=600,75
     dance_floor=pygame.image.load("src/game_files/game_objects/dance_floor.png")
     dance_floor=pygame.transform.smoothscale(dance_floor,(350,200))
     dance_floor_rect=dance_floor.get_rect()
@@ -331,10 +331,11 @@ while not gameOver:
         if avgScore>0.4:
             if gameLevel > 4:
                 game_streak+=1
-            
+                sound=pygame.mixer.Sound("src/sound/bonus_"+str(random.randrange(1,5))+".mp3")
+                sound.play()
                 streak_font=spawnStreakFont()
                 streak_font_list.add(streak_font)
-            gameLevel+=0.4
+            gameLevel+=0.25
         elif gameLevel > 4.5:
             if game_streak > 0:
                 game_streak-=1
