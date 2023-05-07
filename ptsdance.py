@@ -5,7 +5,7 @@ pygame.mixer.init()
 pygame.mixer.music.set_volume(0.5)
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
-pygame.display.set_caption("ptsdance")
+pygame.display.set_caption("ptsdance-revolution")
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
