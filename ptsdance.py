@@ -5,7 +5,7 @@ pygame.mixer.init()
 pygame.mixer.music.set_volume(0.5)
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
-pygame.display.set_caption("ptsdance-revolution")
+pygame.display.set_caption("ptsdance revolution")
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -320,6 +320,8 @@ file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
 while not gameOver:
+    if music_list_index>=len(file_list):
+        music_list_index=0
     if gameScore>int(high_score):    
             with open(hs_path, 'w') as file:
                 file.write(str(gameScore))
@@ -328,7 +330,7 @@ while not gameOver:
         avgScore=right_arrows/10
         total_arrows=0
         right_arrows=0
-        if avgScore>0.4:
+        if avgScore>0.5:
             if gameLevel > 4:
                 game_streak+=1
                 sound=pygame.mixer.Sound("src/sound/bonus_"+str(random.randrange(1,5))+".mp3")
@@ -344,6 +346,7 @@ while not gameOver:
     
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
+        pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play()
         music_list_index+=1
     for event in pygame.event.get():
@@ -351,6 +354,12 @@ while not gameOver:
             pygame.quit()
             sys.exit()
         if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_n:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load("src/music/"+str(file_list[music_list_index]))
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play()
+                music_list_index+=1
             if event.key==pygame.K_ESCAPE:
                 screen.fill((0,0,0))
                 gameOver=True
