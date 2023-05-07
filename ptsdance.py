@@ -6,6 +6,8 @@ pygame.mixer.music.set_volume(0.5)
 resolution=[800,500]
 screen=pygame.display.set_mode(resolution)
 pygame.display.set_caption("ptsdance revolution")
+game_icon=pygame.transform.smoothscale(pygame.image.load("src/game_icon/dance.png"),(50,50))
+pygame.display.set_icon(game_icon)
 gameOver=True
 gameSpeed=15
 arrowList=pygame.sprite.Group()
@@ -44,21 +46,62 @@ tanu_move_list=[pygame.image.load("src/game_files/tanu/left_1.png"),pygame.image
 tanu_idle=[pygame.image.load("src/game_files/tanu/idle_1.png"),pygame.image.load("src/game_files/tanu/idle_2.png"),pygame.image.load("src/game_files/tanu/idle_3.png"),pygame.image.load("src/game_files/tanu/idle_2.png"),pygame.image.load("src/game_files/tanu/idle_1.png")]
 tanu_idle_index=0
 tanu_sprite_list=pygame.sprite.Group()
-
+tanu_dancing=False
+tanu_x=580
+tanu_y=270
+dance_index=0
 class spawnTanu(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-    def update(self):
-        global tanu_idle_index
+    def update(self,color):
+        color=int(color)
+        global tanu_idle_index,tanu_dancing
+        global dance_index
         if tanu_idle_index>4:
-            tanu_idle_index=0
-        tanu_idle_index+=0.25
-        self.image=tanu_idle[round(tanu_idle_index)]
-        self.image=pygame.transform.smoothscale(self.image,(250,100))
-        self.rect=self.image.get_rect()
-        self.rect.center=600,400
-        screen.blit(self.image,self.rect)
+            tanu_idle_index=0        
+        if tanu_dancing:
+           
+            self.image=tanu_move_list[random.randrange(len(tanu_move_list))]
+            self.image=pygame.transform.smoothscale(self.image,(300,350))
+            self.rect=self.image.get_rect()
+            if color==0:                
+                self.rect.center=580,270
+                screen.blit(self.image,self.rect)
+            if color==1:
+                self.rect.center=580,230
+                screen.blit(self.image,self.rect)
+            if color==2:                
+                self.rect.center=580-80,220
+                screen.blit(self.image,self.rect)
+            if color==3:               
+                self.rect.center=470,320
+                screen.blit(self.image,self.rect)
+            if color==4:                
+                self.rect.center=580,320
+                screen.blit(self.image,self.rect)
+            if color==5:                
+                self.rect.center=660,220
+                screen.blit(self.image,self.rect)
+            if color==6:                
+                self.rect.center=670,270
+                screen.blit(self.image,self.rect)
+            if color==7:                
+                self.rect.center=690,320
+                screen.blit(self.image,self.rect)
+            if color==8:                
+                self.rect.center=490,270
+                screen.blit(self.image,self.rect)
 
+        if not tanu_dancing:
+            tanu_idle_index+=0.25
+            self.image=tanu_idle[round(tanu_idle_index)]
+            self.image=pygame.transform.smoothscale(self.image,(300,350))
+            self.rect=self.image.get_rect()
+            self.rect.center=580,270
+            screen.blit(self.image,self.rect)
+        
+        
+        
 
 
 class spawnStreakFont(pygame.sprite.Sprite):
@@ -78,7 +121,6 @@ class spawnStreakFont(pygame.sprite.Sprite):
     def update(self):
         self.rect.y-=random.randrange(1,3)
         if self.rect.y<250:
-           
             self.kill()            
 
 
@@ -226,6 +268,7 @@ def draw_disco_ball():
     screen.blit(spot_light_img,spot_light_img_rect)
     screen.blit(game_score_img,game_score_rect)
 class spawnPass(pygame.sprite.Sprite):
+    
     def __init__(self,imageName):
         super().__init__()
         self.image=imageName
@@ -284,6 +327,7 @@ class spawnArrow(pygame.sprite.Sprite):
     def __init__(self,color,rotation):
         super().__init__()
         arrowName="arrow_"+color+".png"
+        self.color=color
         self.image=pygame.image.load("src/game_files/game_objects/" + arrowName)
         self.image=pygame.transform.smoothscale(self.image,(70,70))
         self.image=pygame.transform.rotate(self.image,rotation+90)
@@ -293,10 +337,10 @@ class spawnArrow(pygame.sprite.Sprite):
 
 
     def update(self):
-        global gameScore,right_arrows
+        global gameScore,right_arrows,tanu_dancing
         self.rect.y -= (gameLevel/5)*2
-        
         if self.rect.y<50:
+             
              key=pygame.key.get_pressed()
              if (key[pygame.K_LEFT] or key[pygame.K_a]) and self.rect.x==15:
                 gameScore+=1
@@ -304,6 +348,10 @@ class spawnArrow(pygame.sprite.Sprite):
                 self.image=pygame.transform.rotate(self.image,90)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass)
+                
+                tanu_dancing=True        
+                tanu_sprite_list.update(self.color)
+                
                 self.kill()
              if (key[pygame.K_DOWN] or key[pygame.K_s]) and self.rect.x==105:
                 gameScore+=1
@@ -311,13 +359,19 @@ class spawnArrow(pygame.sprite.Sprite):
                 self.image=pygame.transform.rotate(self.image,0)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
+                tanu_dancing=True        
+                tanu_sprite_list.update(self.color)
+                
                 self.kill()
              if (key[pygame.K_RIGHT] or key[pygame.K_d]) and self.rect.x==195:
                 gameScore+=1
                 right_arrows+=1
                 self.image=pygame.transform.rotate(self.image,270)
                 spawnpass=spawnPass(self.image)
-                passList.add(spawnpass) 
+                passList.add(spawnpass)
+                tanu_dancing=True        
+                tanu_sprite_list.update(self.color)
+                
                 self.kill()
              if (key[pygame.K_UP] or key[pygame.K_w]) and self.rect.x==285:
                 gameScore+=1
@@ -325,6 +379,9 @@ class spawnArrow(pygame.sprite.Sprite):
                 self.image=pygame.transform.rotate(self.image,180)
                 spawnpass=spawnPass(self.image)
                 passList.add(spawnpass) 
+                tanu_dancing=True        
+                tanu_sprite_list.update(self.color)
+              
                 self.kill()
              self.rect.y -= 1
              if self.rect.y<40:
@@ -396,9 +453,15 @@ while not gameOver:
     screen.fill((14, 23, 31))
     pygame.time.wait(gameSpeed)
     draw_disco_ball()
-    passList.update()
-    tanu_sprite_list.update()
+    if tanu_dancing:
+        dance_index+=0.5
+        if dance_index>2:
+            tanu_dancing=False
+            dance_index=0
+    if not tanu_dancing:
+        tanu_sprite_list.update(100)
     tanu_sprite_list.draw(screen)
+    passList.update()
     passList.draw(screen)
     streak_font_list.update()
     streak_font_list.draw(screen)
