@@ -40,6 +40,27 @@ if os.path.isfile(hs_path):
         high_score = file.readline().strip()  
         high_score=int(high_score)
 color_list=[(255, 31, 31),(255, 128, 31),(255, 221, 31),(225, 255, 31),(91, 255, 31),(31, 255, 150),(31, 195, 255),(31, 106, 255),(132, 31, 255),(188, 31, 255),(231, 40, 252),(252, 40, 142)]
+tanu_move_list=[pygame.image.load("src/game_files/tanu/left_1.png"),pygame.image.load("src/game_files/tanu/left_2.png"),pygame.image.load("src/game_files/tanu/left_3.png"),pygame.image.load("src/game_files/tanu/left_4.png"),pygame.image.load("src/game_files/tanu/left_5.png"),pygame.image.load("src/game_files/tanu/left_6.png"),pygame.image.load("src/game_files/tanu/left_7.png"),pygame.image.load("src/game_files/tanu/right_1.png"),pygame.image.load("src/game_files/tanu/right_2.png"),pygame.image.load("src/game_files/tanu/right_3.png"),pygame.image.load("src/game_files/tanu/right_4.png"),pygame.image.load("src/game_files/tanu/random_1.png"),pygame.image.load("src/game_files/tanu/random_2.png"),pygame.image.load("src/game_files/tanu/random_3.png"),pygame.image.load("src/game_files/tanu/random_4.png"),pygame.image.load("src/game_files/tanu/random_5.png")]
+tanu_idle=[pygame.image.load("src/game_files/tanu/idle_1.png"),pygame.image.load("src/game_files/tanu/idle_2.png"),pygame.image.load("src/game_files/tanu/idle_3.png"),pygame.image.load("src/game_files/tanu/idle_2.png"),pygame.image.load("src/game_files/tanu/idle_1.png")]
+tanu_idle_index=0
+tanu_sprite_list=pygame.sprite.Group()
+
+class spawnTanu(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+    def update(self):
+        global tanu_idle_index
+        if tanu_idle_index>4:
+            tanu_idle_index=0
+        tanu_idle_index+=0.25
+        self.image=tanu_idle[round(tanu_idle_index)]
+        self.image=pygame.transform.smoothscale(self.image,(250,100))
+        self.rect=self.image.get_rect()
+        self.rect.center=600,400
+        screen.blit(self.image,self.rect)
+
+
+
 class spawnStreakFont(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -55,7 +76,6 @@ class spawnStreakFont(pygame.sprite.Sprite):
         self.rect.center=230+random.randrange(200),400+random.randrange(50)
         screen.blit(self.image,self.rect)
     def update(self):
-      
         self.rect.y-=random.randrange(1,3)
         if self.rect.y<250:
            
@@ -319,6 +339,8 @@ music_dir="src/music/"
 file_list=os.listdir(music_dir)
 random.shuffle(file_list)
 music_list_index=0
+spawn_tanu=spawnTanu()
+tanu_sprite_list.add(spawn_tanu)
 while not gameOver:
     if music_list_index>=len(file_list):
         music_list_index=0
@@ -375,6 +397,8 @@ while not gameOver:
     pygame.time.wait(gameSpeed)
     draw_disco_ball()
     passList.update()
+    tanu_sprite_list.update()
+    tanu_sprite_list.draw(screen)
     passList.draw(screen)
     streak_font_list.update()
     streak_font_list.draw(screen)
